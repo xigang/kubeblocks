@@ -1100,3 +1100,100 @@ const (
 	ReasonReconfigureSucceed       = "ReconfigureSucceed"
 	ReasonReconfigureRunning       = "ReconfigureRunning"
 )
+
+// PodSelectionPolicy pod selection strategy.
+// +enum
+// +kubebuilder:validation:Enum={All,Any}
+type PodSelectionPolicy string
+
+const (
+	All PodSelectionPolicy = "All"
+	Any PodSelectionPolicy = "Any"
+)
+
+// OpsWorkloadType policy after action failure.
+// +enum
+// +kubebuilder:validation:Enum={Job,Pod}
+type OpsWorkloadType string
+
+const (
+	PodWorkload OpsWorkloadType = "Pod"
+	JobWorkload OpsWorkloadType = "Job"
+)
+
+// OpsPhase defines opsRequest phase.
+// +enum
+// +kubebuilder:validation:Enum={Pending,Creating,Running,Cancelling,Cancelled,Aborted,Failed,Succeed}
+type OpsPhase string
+
+const (
+	OpsPendingPhase    OpsPhase = "Pending"
+	OpsCreatingPhase   OpsPhase = "Creating"
+	OpsRunningPhase    OpsPhase = "Running"
+	OpsCancellingPhase OpsPhase = "Cancelling"
+	OpsSucceedPhase    OpsPhase = "Succeed"
+	OpsCancelledPhase  OpsPhase = "Cancelled"
+	OpsFailedPhase     OpsPhase = "Failed"
+	OpsAbortedPhase    OpsPhase = "Aborted"
+)
+
+// OpsType defines operation types.
+// +enum
+// +kubebuilder:validation:Enum={Upgrade,VerticalScaling,VolumeExpansion,HorizontalScaling,Restart,Reconfiguring,Start,Stop,Expose,Switchover,Backup,Restore,RebuildInstance,Custom}
+type OpsType string
+
+const (
+	VerticalScalingType   OpsType = "VerticalScaling"
+	HorizontalScalingType OpsType = "HorizontalScaling"
+	VolumeExpansionType   OpsType = "VolumeExpansion"
+	UpgradeType           OpsType = "Upgrade"
+	ReconfiguringType     OpsType = "Reconfiguring"
+	SwitchoverType        OpsType = "Switchover"
+	RestartType           OpsType = "Restart" // RestartType the restart operation is a special case of the rolling update operation.
+	StopType              OpsType = "Stop"    // StopType the stop operation will delete all pods in a cluster concurrently.
+	StartType             OpsType = "Start"   // StartType the start operation will start the pods which is deleted in stop operation.
+	ExposeType            OpsType = "Expose"
+	BackupType            OpsType = "Backup"
+	RestoreType           OpsType = "Restore"
+	RebuildInstanceType   OpsType = "RebuildInstance" // RebuildInstance rebuilding an instance is very useful when a node is offline or an instance is unrecoverable.
+	CustomType            OpsType = "Custom"          // use opsDefinition
+)
+
+// ProgressStatus defines the status of the opsRequest progress.
+// +enum
+// +kubebuilder:validation:Enum={Processing,Pending,Failed,Succeed}
+type ProgressStatus string
+
+const (
+	PendingProgressStatus    ProgressStatus = "Pending"
+	ProcessingProgressStatus ProgressStatus = "Processing"
+	FailedProgressStatus     ProgressStatus = "Failed"
+	SucceedProgressStatus    ProgressStatus = "Succeed"
+)
+
+// ActionTaskStatus defines the status of the task.
+// +enum
+// +kubebuilder:validation:Enum={Processing,Failed,Succeed}
+type ActionTaskStatus string
+
+const (
+	ProcessingActionTaskStatus ActionTaskStatus = "Processing"
+	FailedActionTaskStatus     ActionTaskStatus = "Failed"
+	SucceedActionTaskStatus    ActionTaskStatus = "Succeed"
+)
+
+type OpsRequestBehaviour struct {
+	FromClusterPhases []ClusterPhase
+	ToClusterPhase    ClusterPhase
+}
+
+type OpsRecorder struct {
+	// name OpsRequest name
+	Name string `json:"name"`
+	// opsRequest type
+	Type OpsType `json:"type"`
+	// indicates whether the current opsRequest is in the queue
+	InQueue bool `json:"inQueue,omitempty"`
+	// indicates that the operation is queued for execution within its own-type scope.
+	QueueBySelf bool `json:"queueBySelf,omitempty"`
+}
