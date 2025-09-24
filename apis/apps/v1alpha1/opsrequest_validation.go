@@ -105,7 +105,8 @@ func (r *OpsRequest) ValidateClusterPhase(cluster *appsv1.Cluster) error {
 		}
 	}
 	// check if the opsRequest can be executed in the current cluster.
-	if slices.Contains(opsBehaviour.FromClusterPhases, cluster.Status.Phase) {
+	// convert apps/v1.ClusterPhase to local v1alpha1.ClusterPhase for comparison
+	if slices.Contains(opsBehaviour.FromClusterPhases, ClusterPhase(cluster.Status.Phase)) {
 		return nil
 	}
 	var opsRecord *OpsRecorder
